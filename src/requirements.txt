@@ -1,7 +1,1 @@
-altgraph==0.17
-future==0.18.2
-pefile==2021.5.24
-pyinstaller==4.3
-pyinstaller-hooks-contrib==2021.1
-pywin32-ctypes==0.2.0
 youtube-dl==2021.5.16
