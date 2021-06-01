@@ -1,7 +1,9 @@
 name: Package Application with Pyinstaller
 
 on:
-  [push]
+  push:
+    tags:
+    - '*'
 
 jobs:
   build:
@@ -14,9 +16,24 @@ jobs:
     - name: Package Application
       uses: JackMcKew/pyinstaller-action-windows@main
       with:
-        path: ./
+        path: src
 
     - uses: actions/upload-artifact@v2
       with:
-        name: name-of-artifact
+        name: yt_rip
         path: src/dist/windows
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: yt_rip
+          path: build/windows
+      - name: make release
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: /home/runner/work/yt_rip/yt_rip/build/windows
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
