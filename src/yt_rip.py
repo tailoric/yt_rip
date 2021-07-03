@@ -4,6 +4,7 @@ import asyncio
 import subprocess
 from functools import partial
 import logging
+import shutil
 
 async def get_dl_url(url, opt):
     loop = asyncio.get_event_loop()
@@ -53,18 +54,22 @@ async def download_and_launch_ffmpeg(args):
     p = subprocess.Popen(arglist)
     p.communicate()
 
-parser = argparse.ArgumentParser(description="A python script wrapping ffmpeg and youtube_dl for downloading timestamps from youtube or other sources")
-parser.add_argument('--from', dest='_from', help="start time of the video")
-parser.add_argument('--to', dest='_to', help="end time of the clip")
-parser.add_argument('-c', dest='copy', action='store_true', help="use the quick copy option")
-parser.add_argument('--output', dest='output', help="set output file")
-parser.add_argument('--ytdl-flags', dest="ytdl_flags", help="Set some misc flags you want to pass to youtube_dl (comma separated) like --ytdl-flags=option1=value,option2=value", type=str)
-parser.add_argument('-d', dest="debug", help="set to debug mode", action='store_true')
-parser.add_argument('url')
-args = parser.parse_args()
-args = vars(args)
-logging.basicConfig(level=logging.DEBUG if args.get('debug') else logging.INFO)
-logging.debug(args)
-asyncio.run(download_and_launch_ffmpeg(args))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A python script wrapping ffmpeg and youtube_dl for downloading timestamps from youtube or other sources")
+    parser.add_argument('--from', dest='_from', help="start time of the video")
+    parser.add_argument('--to', dest='_to', help="end time of the clip")
+    parser.add_argument('-c', dest='copy', action='store_true', help="use the quick copy option")
+    parser.add_argument('--output', dest='output', help="set output file")
+    parser.add_argument('--ytdl-flags', dest="ytdl_flags", help="Set some misc flags you want to pass to youtube_dl (comma separated) like --ytdl-flags=option1=value,option2=value", type=str)
+    parser.add_argument('-d', dest="debug", help="set to debug mode", action='store_true')
+    parser.add_argument('url')
+    args = parser.parse_args()
+    args = vars(args)
+    logging.basicConfig(level=logging.DEBUG if args.get('debug') else logging.INFO)
+    logging.debug(args)
+    if not shutil.which('ffmpeg'):
+        logging.error("ffmpeg not found, please download or install: https://ffmpeg.org/download.html")
+        exit(1)
+    asyncio.run(download_and_launch_ffmpeg(args))
 
 
