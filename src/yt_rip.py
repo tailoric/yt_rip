@@ -46,7 +46,7 @@ async def download_and_launch_ffmpeg(args):
         arglist.extend(['-c', 'copy'])
     arglist.append('-y')
     if args.get('output'):
-        arglist.append(args.output)
+        arglist.append(args.get('output'))
     else:
         arglist.append('output.mp4')
     logging.debug(arglist)
